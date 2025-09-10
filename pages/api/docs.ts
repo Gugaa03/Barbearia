@@ -7,10 +7,10 @@ const options = {
     info: {
       title: "Barbearia API",
       version: "1.0.0",
-      description: "API de usuários usando apenas Supabase Auth",
+      description: "API para gerenciamento de clientes, cortes e usuários",
     },
   },
-  apis: ["./pages/api/*.ts"],
+  apis: ["./pages/api/*.ts"], // aponta para seus endpoints
 };
 
 const swaggerSpec = swaggerJsdoc(options);
@@ -30,12 +30,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         <div id="swagger-ui"></div>
         <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
         <script>
-          const ui = SwaggerUIBundle({
-            spec: ${JSON.stringify(swaggerSpec)},
-            dom_id: '#swagger-ui',
-            presets: [SwaggerUIBundle.presets.apis],
-            layout: "BaseLayout"
-          });
+          window.onload = function() {
+            const ui = SwaggerUIBundle({
+              spec: ${JSON.stringify(swaggerSpec)},
+              dom_id: '#swagger-ui',
+              presets: [SwaggerUIBundle.presets.apis],
+              layout: "BaseLayout"
+            });
+          };
         </script>
       </body>
     </html>
