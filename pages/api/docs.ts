@@ -1,45 +1,101 @@
+// /pages/api/docs.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import swaggerJsdoc from "swagger-jsdoc";
 
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Barbearia API",
-      version: "1.0.0",
-      description: "API para gerenciamento de clientes, cortes e usuários",
+const swaggerSpec = {
+  openapi: "3.0.0",
+  info: {
+    title: "API BarberShop",
+    version: "1.0.0",
+    description: "API para marcações de clientes e barbeiros",
+  },
+  servers: [
+    { url: "http://localhost:3000/api" }, // muda para o domínio em produção
+  ],
+  paths: {
+    "/marcacoes/create": {
+      post: {
+        summary: "Criar uma nova marcação",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  clienteId: { type: "string" },
+                  barbeiroId: { type: "string" },
+                  servico: { type: "string" },
+                  data: { type: "string", format: "date" },
+                  hora: { type: "string" },
+                },
+                required: ["clienteId", "barbeiroId", "servico", "data", "hora"],
+              },
+              example: {
+                clienteId: "uuid-do-cliente",
+                barbeiroId: "uuid-do-barbeiro",
+                servico: "Corte de cabelo",
+                data: "2025-09-12",
+                hora: "14:00",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Marcação criada",
+            content: {
+              "application/json": {
+                example: {
+                  message: "Marcação criada com sucesso",
+                  marcacao: {
+                    id: "uuid",
+                    cliente_id: "uuid-do-cliente",
+                    barbeiro_id: "uuid-do-barbeiro",
+                    servico: "Corte de cabelo",
+                    data: "2025-09-12",
+                    hora: "14:00",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/marcacoes/disponiveis": {
+      get: {
+        summary: "Listar horários disponíveis para um barbeiro numa data",
+        parameters: [
+          {
+            name: "barbeiroId",
+            in: "query",
+            required: true,
+            schema: { type: "string" },
+          },
+          {
+            name: "data",
+            in: "query",
+            required: true,
+            schema: { type: "string", format: "date" },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Horários disponíveis",
+            content: {
+              "application/json": {
+                example: {
+                  disponiveis: ["09:00", "10:00", "11:00"],
+                },
+              },
+            },
+          },
+        },
+      },
     },
   },
-  apis: ["./pages/api/*.ts"], // aponta para seus endpoints
 };
 
-const swaggerSpec = swaggerJsdoc(options);
-
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "GET") return res.status(405).send("Método não permitido");
-
-  res.setHeader("Content-Type", "text/html");
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Swagger Barbearia API</title>
-        <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
-      </head>
-      <body>
-        <div id="swagger-ui"></div>
-        <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
-        <script>
-          window.onload = function() {
-            const ui = SwaggerUIBundle({
-              spec: ${JSON.stringify(swaggerSpec)},
-              dom_id: '#swagger-ui',
-              presets: [SwaggerUIBundle.presets.apis],
-              layout: "BaseLayout"
-            });
-          };
-        </script>
-      </body>
-    </html>
-  `);
+  res.status(200).json(swaggerSpec);
 }
