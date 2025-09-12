@@ -3,13 +3,13 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import Navbar from "../components/Navbar";
 
-function MyApp({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
   return (
-    <>
+    <div className="min-h-screen">
       <Navbar />
-      <Component {...pageProps} />
-    </>
-  );
+      <div className="pt-20"> {/* padding para não ficar por baixo da navbar fixa */}
+        <Component {...pageProps} />
+      </div>
+    </div>
+  )
 }
-
-export default MyApp;
