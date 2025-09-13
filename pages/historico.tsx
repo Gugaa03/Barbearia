@@ -16,7 +16,9 @@ export default function HistoricoCliente() {
 
   useEffect(() => {
     const fetchMarcacoes = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       console.log("Usuário logado:", user);
       if (!user) return;
 
@@ -31,8 +33,10 @@ export default function HistoricoCliente() {
       if (error) return;
 
       const hoje = new Date();
-      const atuais = data?.filter(m => new Date(m.data + "T" + m.hora) >= hoje) || [];
-      const passadas = data?.filter(m => new Date(m.data + "T" + m.hora) < hoje) || [];
+      const atuais =
+        data?.filter((m) => new Date(m.data + "T" + m.hora) >= hoje) || [];
+      const passadas =
+        data?.filter((m) => new Date(m.data + "T" + m.hora) < hoje) || [];
 
       console.log("Marcações atuais:", atuais);
       console.log("Marcações passadas:", passadas);
@@ -56,10 +60,18 @@ export default function HistoricoCliente() {
           <div className="grid md:grid-cols-2 gap-6">
             {marcacoesAtuais.map((m) => (
               <Card key={m.id} className="p-4">
-                <p><strong>Serviço:</strong> {m.servico}</p>
-                <p><strong>Barbeiro:</strong> {m.barbeiro?.nome}</p>
-                <p><strong>Data:</strong> {m.data}</p>
-                <p><strong>Hora:</strong> {m.hora}</p>
+                <p>
+                  <strong>Serviço:</strong> {m.servico}
+                </p>
+                <p>
+                  <strong>Barbeiro:</strong> {m.barbeiro?.nome}
+                </p>
+                <p>
+                  <strong>Data:</strong> {m.data}
+                </p>
+                <p>
+                  <strong>Hora:</strong> {m.hora}
+                </p>
               </Card>
             ))}
           </div>
@@ -74,10 +86,18 @@ export default function HistoricoCliente() {
           <div className="grid md:grid-cols-2 gap-6">
             {marcacoesPassadas.map((m) => (
               <Card key={m.id} className="p-4">
-                <p><strong>Serviço:</strong> {m.servico}</p>
-                <p><strong>Barbeiro:</strong> {m.barbeiro?.nome}</p>
-                <p><strong>Data:</strong> {m.data}</p>
-                <p><strong>Hora:</strong> {m.hora}</p>
+                <p>
+                  <strong>Serviço:</strong> {m.servico}
+                </p>
+                <p>
+                  <strong>Barbeiro:</strong> {m.barbeiro?.nome}
+                </p>
+                <p>
+                  <strong>Data:</strong> {m.data}
+                </p>
+                <p>
+                  <strong>Hora:</strong> {m.hora}
+                </p>
               </Card>
             ))}
           </div>

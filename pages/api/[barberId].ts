@@ -2,7 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabase } from "../../lib/supabase";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const { barberId } = req.query;
 
   if (!barberId) {
@@ -24,7 +27,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({ appointments: data });
   } catch (err: any) {
     console.error("Erro interno ao buscar agendamentos:", err);
-    return res.status(500).json({ error: "Erro interno ao buscar agendamentos" });
+    return res
+      .status(500)
+      .json({ error: "Erro interno ao buscar agendamentos" });
   }
 }
 /**

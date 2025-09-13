@@ -2,7 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     const supabaseAdmin = createServerSupabaseClient({ req, res });
 
@@ -15,12 +18,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Filtra apenas os barbeiros (role = barber)
-    const barbeiros = users.filter(u => u.user_metadata?.role === "barber").map(u => ({
-      id: u.id,
-      email: u.email,
-      nome: u.user_metadata?.nome || "Sem nome",
-      foto: u.user_metadata?.foto || null,
-    }));
+    const barbeiros = users
+      .filter((u) => u.user_metadata?.role === "barber")
+      .map((u) => ({
+        id: u.id,
+        email: u.email,
+        nome: u.user_metadata?.nome || "Sem nome",
+        foto: u.user_metadata?.foto || null,
+      }));
 
     res.status(200).json(barbeiros);
   } catch (err) {

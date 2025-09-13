@@ -40,15 +40,15 @@ export default function Navbar() {
         {!user ? (
           <>
             <Link href="/login" className="hover:text-blue-400">Login</Link>
-            <Link href="/register" className="hover:text-blue-400">Registar</Link>
+            <Link href="/signup" className="hover:text-blue-400">Registar</Link>
           </>
         ) : (
           <>
             {user.user_metadata?.role === "barber" && (
               <>
-                <Link href="/dashboard" className="hover:text-blue-400">Dashboard</Link>
+                <Link href="/admin/dashboard" className="hover:text-blue-400">Dashboard</Link>
                 <Link href="/historicobarber" className="hover:text-blue-400">Agenda</Link>
-                <Link href="/admin/register-barber" className="hover:text-blue-400">Registar Barbeiro</Link>
+                <Link href="/admin/addBarber" className="hover:text-blue-400">Registar Barbeiro</Link>
                 <Link href="/portfolio" className="hover:text-blue-400">Portfólio</Link>
                 <span className="font-semibold">Olá {user.user_metadata?.nome || "Barbeiro"}</span>
                 <button onClick={handleLogout} className="hover:text-red-400">Logout</button>

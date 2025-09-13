@@ -3,7 +3,7 @@
 import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
-
+/*  */
 interface EditarBarbeiroProps {
   isOpen: boolean;
   onClose: () => void;
@@ -16,7 +16,12 @@ interface EditarBarbeiroProps {
   onSave?: () => void; // callback opcional após salvar
 }
 
-export default function EditarBarbeiro({ isOpen, onClose, barbeiro, onSave }: EditarBarbeiroProps) {
+export default function EditarBarbeiro({
+  isOpen,
+  onClose,
+  barbeiro,
+  onSave,
+}: EditarBarbeiroProps) {
   const [nome, setNome] = useState(barbeiro.nome ?? "");
   const [role, setRole] = useState(barbeiro.role ?? "barber");
   const [fotoUrl, setFotoUrl] = useState(barbeiro.foto ?? "");
@@ -48,16 +53,21 @@ export default function EditarBarbeiro({ isOpen, onClose, barbeiro, onSave }: Ed
         return;
       }
 
-      const { publicUrl } = supabase.storage.from("barbers").getPublicUrl(fileName);
+      const { publicUrl } = supabase.storage
+        .from("barbers")
+        .getPublicUrl(fileName);
       finalFoto = publicUrl;
     }
 
     // Atualizar dados no Supabase
-    const { error } = await supabase.from("barbeiros").update({
-      nome,
-      role,
-      foto: finalFoto,
-    }).eq("id", barbeiro.id);
+    const { error } = await supabase
+      .from("barbeiros")
+      .update({
+        nome,
+        role,
+        foto: finalFoto,
+      })
+      .eq("id", barbeiro.id);
 
     if (error) {
       alert("Erro ao atualizar barbeiro: " + error.message);
@@ -71,10 +81,16 @@ export default function EditarBarbeiro({ isOpen, onClose, barbeiro, onSave }: Ed
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} className="fixed inset-0 z-50 flex items-center justify-center">
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center"
+    >
       <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
       <div className="relative bg-white rounded-lg p-6 w-full max-w-md z-50">
-        <Dialog.Title className="text-xl font-bold mb-4">Editar Barbeiro</Dialog.Title>
+        <Dialog.Title className="text-xl font-bold mb-4">
+          Editar Barbeiro
+        </Dialog.Title>
 
         <div className="flex flex-col gap-3">
           {/* Nome */}
@@ -128,7 +144,11 @@ export default function EditarBarbeiro({ isOpen, onClose, barbeiro, onSave }: Ed
               }}
               className="border p-1 rounded"
             />
-            {fotoFile && <p className="text-sm text-gray-500 mt-1">Arquivo selecionado: {fotoFile.name}</p>}
+            {fotoFile && (
+              <p className="text-sm text-gray-500 mt-1">
+                Arquivo selecionado: {fotoFile.name}
+              </p>
+            )}
           </div>
         </div>
 
@@ -144,7 +164,10 @@ export default function EditarBarbeiro({ isOpen, onClose, barbeiro, onSave }: Ed
         )}
 
         <div className="mt-4 flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+          >
             Cancelar
           </button>
           <button
