@@ -1,55 +1,49 @@
+"use client";
+
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabase";
 
-export function useAuthLogoutOnDeleted() {
+export function useAutoLogout() {
+  const router = useRouter();
+
   useEffect(() => {
     const checkUserDeleted = async () => {
-      console.log("🔎 Checando se usuário foi deletado...");
-
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError) {
-        console.error("❌ Erro ao obter sessão:", sessionError);
-        return;
-      }
-
-      const session = sessionData?.session;
-      if (!session?.user) {
-        console.log("⚠️ Nenhum usuário logado");
-        return;
-      }
-
-      const { email } = session.user;
-      console.log("👤 Usuário logado:", email);
-
       try {
-        const res = await fetch("/api/checkUserExists", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        });
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          console.error("Erro ao pegar sessão:", sessionError);
+          return;
+        }
 
-        console.log("📌 Resposta do fetch:", res.status);
+        if (!session) return; // Não logado
 
-        const data = await res.json().catch(() => null);
-        console.log("📄 Dados recebidos do endpoint:", data);
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-        // Se o endpoint falhar ou usuário não existir → logout
-        if (!res.ok || !data || data.exists === false) {
-          console.log("🚪 Usuário não existe mais, realizando logout:", email);
+        if (userError) {
+          // Usuário não existe mais → deletado
+          if (userError.message.includes("User from sub claim in JWT does not exist")) {
+            alert("Sua conta foi deletada. Você será deslogado.");
+            await supabase.auth.signOut();
+            router.push("/login");
+            return;
+          }
+          console.error("Erro ao buscar usuário:", userError);
+        }
+
+        if (!user) {
           await supabase.auth.signOut();
-        } else {
-          console.log("✅ Usuário ainda existe:", email);
+          router.push("/login");
         }
 
       } catch (err) {
-        console.error("❌ Erro ao checar usuário no backend:", err);
+        console.error("Erro inesperado ao verificar usuário:", err);
       }
     };
 
-    // Checa imediatamente e depois a cada 30s
     checkUserDeleted();
-    const interval = setInterval(checkUserDeleted, 30000);
+    const interval = setInterval(checkUserDeleted, 30000); // checa a cada 30s
 
     return () => clearInterval(interval);
-  }, []);
+  }, [router]);
 }

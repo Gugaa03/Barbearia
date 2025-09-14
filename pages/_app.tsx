@@ -2,10 +2,10 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import Navbar from "../components/Navbar";
-import { useAuthLogoutOnDeleted } from "../hooks/useAutoLogout"
+import { useAutoLogout } from "../hooks/useAutoLogout"
 
 export default function App({ Component, pageProps }: AppProps) {
-  useAuthLogoutOnDeleted(); 
+  useAutoLogout();
 
   return (
     <div className="min-h-screen">

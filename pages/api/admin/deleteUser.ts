@@ -8,14 +8,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { userId, id, email, barbeiroId } = req.body;
-console.log("📌 BODY RECEBIDO:", req.body);
-let authUserId = req.body.userId || req.body.id;
-console.log("🔹 authUserId inicial:", authUserId);
-console.log("🔹 barbeiroId:", req.body.barbeiroId);
+  console.log("📌 BODY RECEBIDO:", req.body);
+  let authUserId = req.body.userId || req.body.id;
+  console.log("🔹 authUserId inicial:", authUserId);
+  console.log("🔹 barbeiroId:", req.body.barbeiroId);
+
   try {
     console.log("📌 DELETE REQUEST RECEIVED:", { userId, id, email, barbeiroId });
 
-   // ===== DELETAR BARBEIRO =====
+    // ===== DELETAR BARBEIRO =====
     if (barbeiroId) {
       const { data: barberData, error: barberError } = await supabaseAdmin
         .from("barbeiros")
@@ -52,15 +53,16 @@ console.log("🔹 barbeiroId:", req.body.barbeiroId);
 
       return res.status(200).json({ success: true, message: "Barbeiro deletado da tabela e do Auth" });
     }
-    // ===== DELETAR CLIENTE =====
-    let authUserId = userId || id;
 
-    if (!authUserId && email) {
+    // ===== DELETAR CLIENTE =====
+    let authUserIdCliente = userId || id;
+
+    if (!authUserIdCliente && email) {
       console.log(`🔍 Procurando cliente na tabela clientes_view com email: ${email}`);
 
       const { data: clienteData, error: clienteError } = await supabaseAdmin
         .from("clientes_view")
-        .select("user_id")
+        .select("user_id, id")
         .eq("email", email)
         .single();
 
@@ -81,23 +83,34 @@ console.log("🔹 barbeiroId:", req.body.barbeiroId);
         return res.status(400).json({ error: "Cliente não possui user_id" });
       }
 
-      authUserId = clienteData.user_id;
+      authUserIdCliente = clienteData.user_id;
+
+      // Verificar se o cliente tem marcações pendentes
+      const { data: marcacoesExistem } = await supabaseAdmin
+        .from("marcacoes")
+        .select("id")
+        .eq("cliente_id", clienteData.id)
+        .limit(1);
+
+      if (marcacoesExistem?.length) {
+        return res.status(400).json({ error: "Não é possível deletar cliente com marcações pendentes" });
+      }
     }
 
-    if (!authUserId) {
+    if (!authUserIdCliente) {
       console.warn("⚠️ Nenhum ID encontrado para deletar");
       return res.status(400).json({ error: "ID do Auth ou barbeiroId obrigatório" });
     }
 
-    console.log("🗑️ Deletando usuário do Auth com ID:", authUserId);
+    console.log("🗑️ Deletando usuário do Auth com ID:", authUserIdCliente);
 
-    const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(authUserId);
+    const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(authUserIdCliente);
     if (deleteAuthError) {
       console.error("❌ Erro ao deletar do Auth:", deleteAuthError);
       return res.status(400).json({ error: deleteAuthError.message });
     }
 
-    console.log("✅ Cliente deletado com sucesso do Auth:", authUserId);
+    console.log("✅ Cliente deletado com sucesso do Auth:", authUserIdCliente);
     return res.status(200).json({ success: true, message: "Cliente deletado do Auth" });
   } catch (err: any) {
     console.error("❌ Erro inesperado ao deletar usuário/barbeiro:", err);

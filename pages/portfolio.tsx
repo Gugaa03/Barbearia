@@ -8,7 +8,7 @@ const cortes = [
     id: 1,
     nome: "Fade Moderno",
     descricao: "Corte degradê moderno, ideal para um estilo atual e elegante.",
-    imagem: "https://images.unsplash.com/photo-1600180758895-8d7a77f3314c?auto=format&fit=crop&w=800&q=80",
+    imagem: "https://pin.it/6hLZAmYyz",
   },
   {
     id: 2,
