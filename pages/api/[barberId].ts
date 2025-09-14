@@ -1,88 +1,48 @@
-// /pages/api/appointments/[barberId].ts
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabase } from "../../lib/supabase";
+import { supabaseAdmin } from "../../lib/supabase";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const { barberId } = req.query;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Método não permitido" });
+  }
 
-  if (!barberId) {
-    return res.status(400).json({ error: "barberId é obrigatório" });
+  const {
+    servico,
+    servico_id,
+    preco,
+    barbeiro_id,
+    cliente_id,
+    nome_cliente,
+    email_cliente,
+    data,
+    hora
+  } = req.body;
+
+  if (!servico || !preco || !barbeiro_id || !data || !hora) {
+    return res.status(400).json({ error: "Campos obrigatórios ausentes" });
   }
 
   try {
-    const { data, error } = await supabase
-      .from("appointments")
-      .select("appointment_date, service, client_id")
-      .eq("barber_id", barberId)
-      .order("appointment_date", { ascending: true });
+    const { data: inserted, error } = await supabaseAdmin
+      .from("marcacoes")
+      .insert([{
+        servico,
+        servico_id,
+        preco,
+        barbeiro_id,
+        cliente_id: cliente_id || null,
+        nome_cliente: nome_cliente || null,
+        email_cliente: email_cliente || null,
+        data,
+        hora
+      }])
+      .select();
 
-    if (error) {
-      console.error("Erro ao buscar agendamentos:", error);
-      return res.status(400).json({ error: error.message });
-    }
+    if (error) throw error;
 
-    return res.status(200).json({ appointments: data });
+    return res.status(200).json({ success: true, inserted });
   } catch (err: any) {
-    console.error("Erro interno ao buscar agendamentos:", err);
-    return res
-      .status(500)
-      .json({ error: "Erro interno ao buscar agendamentos" });
+    console.error("Erro ao criar marcação:", err.message);
+    return res.status(500).json({ error: err.message });
   }
 }
-/**
- * @swagger
- * /api/appointments/{barberId}:
- *   get:
- *     summary: Buscar agendamentos de um barbeiro
- *     description: Retorna todos os agendamentos de um barbeiro específico, com datas e serviços.
- *     tags:
- *       - Appointments
- *     parameters:
- *       - name: barberId
- *         in: path
- *         required: true
- *         description: UUID do barbeiro
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Lista de agendamentos do barbeiro
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 appointments:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       appointment_date:
- *                         type: string
- *                         format: date-time
- *                       service:
- *                         type: string
- *                       client_id:
- *                         type: string
- *       400:
- *         description: Erro de requisição (parâmetro inválido ou erro do Supabase)
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *       500:
- *         description: Erro interno do servidor
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- */

@@ -8,7 +8,7 @@ const cortes = [
     id: 1,
     nome: "Fade Moderno",
     descricao: "Corte degradê moderno, ideal para um estilo atual e elegante.",
-    imagem: "https://pin.it/6hLZAmYyz",
+    imagem: "https://www.google.com/imgres?q=fade%20moderno&imgurl=https%3A%2F%2Fcontent.clara.es%2Fmedio%2F2024%2F06%2F12%2Fcortes-de-pelo-hombre-moderno-drop-fade_e2352a5b_240612130554_800x1000.webp&imgrefurl=https%3A%2F%2Fwww.clara.es%2Fbelleza%2F25-cortes-pelo-para-hombres-modernos-que-se-llevan-2025-y-actualizan-look_35650&docid=7g_olRPttUGhNM&tbnid=JEsxNNTvP0T_1M&vet=12ahUKEwj-8smv89aPAxVtVaQEHV5yBx4QM3oECCIQAA..i&w=800&h=1000&hcb=2&ved=2ahUKEwj-8smv89aPAxVtVaQEHV5yBx4QM3oECCIQAA",
   },
   {
     id: 2,
