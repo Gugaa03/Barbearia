@@ -11,6 +11,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+    Cell,   // ✅ IMPORTA O Cell
 } from "recharts";
 
 interface User {
@@ -212,44 +213,95 @@ export default function AdminDashboard() {
       )}
 
       {/* === Custos / Receitas === */}
-      {aba === "custos" && (
-        <div className="bg-white shadow rounded-lg p-6 space-y-6">
-          {loadingMarcacoes ? <p>Carregando ganhos...</p> :
-            <>
-              <div className="flex justify-center gap-4 mb-6">
-                <label className="font-semibold text-gray-700">Mostrar ganhos:</label>
-                <select
-                  value={filtroTempo}
-                  onChange={e => setFiltroTempo(e.target.value as any)}
-                  className="border px-2 py-1 rounded"
-                >
-                  <option value="diario">Diário</option>
-                  <option value="mensal">Mensal</option>
-                  <option value="anual">Anual</option>
-                </select>
-              </div>
-
-              <div className="text-center p-4 bg-blue-50 rounded-lg">
-                <h3 className="text-xl font-bold mb-2">
-                  Ganhos {filtroTempo.charAt(0).toUpperCase() + filtroTempo.slice(1)}
-                </h3>
-                <p className="text-2xl font-bold">{total.toFixed(2)} €</p>
-              </div>
-
-              <div className="mt-6">
-                <h3 className="text-xl font-bold mb-4 text-center">Ganhos por Serviço</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={chartData}>
-                    <XAxis dataKey="servico" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="valor" fill="#3182ce" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </>}
+{aba === "custos" && (
+  <div className="bg-white shadow rounded-lg p-6 space-y-8">
+    {loadingMarcacoes ? (
+      <p>Carregando ganhos...</p>
+    ) : (
+      <>
+        {/* Filtro de tempo */}
+        <div className="flex justify-center gap-4 mb-6">
+          <label className="font-semibold text-gray-700">Mostrar ganhos:</label>
+          <select
+            value={filtroTempo}
+            onChange={e => setFiltroTempo(e.target.value as any)}
+            className="border px-2 py-1 rounded"
+          >
+            <option value="diario">Diário</option>
+            <option value="mensal">Mensal</option>
+            <option value="anual">Anual</option>
+          </select>
         </div>
-      )}
+
+        {/* Cards de resumo */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+          <div className="p-4 bg-blue-50 rounded-lg shadow">
+            <h3 className="text-lg font-semibold">Ganhos Totais</h3>
+            <p className="text-2xl font-bold text-blue-600">{total.toFixed(2)} €</p>
+          </div>
+          <div className="p-4 bg-green-50 rounded-lg shadow">
+            <h3 className="text-lg font-semibold">Nº de Marcações</h3>
+            <p className="text-2xl font-bold text-green-600">{marcacoes.length}</p>
+          </div>
+          <div className="p-4 bg-yellow-50 rounded-lg shadow">
+            <h3 className="text-lg font-semibold">Serviço Mais Popular</h3>
+            <p className="text-xl font-bold text-yellow-600">
+              {chartData.length > 0
+                ? chartData.reduce((a, b) => (a.valor > b.valor ? a : b)).servico
+                : "—"}
+            </p>
+          </div>
+        </div>
+
+        {/* Gráfico */}
+        <div className="mt-8">
+          <h3 className="text-xl font-bold mb-4 text-center">Ganhos por Serviço</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData}>
+              <XAxis dataKey="servico" />
+              <YAxis />
+              <Tooltip formatter={(value: number) => `${value.toFixed(2)} €`} />
+              <Bar dataKey="valor" fill="#3182ce">
+                {chartData.map((entry, index) => {
+                  let color = "#3182ce"; // azul padrão
+                  if (entry.servico.toLowerCase().includes("barba")) color = "#e53e3e"; // vermelho para Barba
+                  if (entry.servico.toLowerCase().includes("corte")) color = "#38a169"; // verde para Corte
+                  if (entry.servico.toLowerCase().includes("combo")) color = "#d69e2e"; // amarelo para combos
+                  return <Cell key={`cell-${index}`} fill={color} />;
+                })}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Lista detalhada */}
+        <div className="mt-8">
+          <h3 className="text-xl font-bold mb-4 text-center">Detalhes</h3>
+          <table className="w-full border-collapse border border-gray-200 text-center">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border p-2">Serviço</th>
+                <th className="border p-2">Ganhos (€)</th>
+                <th className="border p-2">%</th>
+              </tr>
+            </thead>
+            <tbody>
+              {chartData.map(({ servico, valor }) => (
+                <tr key={servico}>
+                  <td className="border p-2">{servico}</td>
+                  <td className="border p-2">{valor.toFixed(2)}</td>
+                  <td className="border p-2">
+                    {((valor / total) * 100).toFixed(1)} %
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </>
+    )}
+  </div>
+)}
     </div>
-  );
-}
+  ); // return
+} // function AdminDashboard

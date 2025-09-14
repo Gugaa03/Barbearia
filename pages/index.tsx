@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
@@ -9,16 +10,14 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 const servicos = [
-  { id: 1, nome: "Corte de Cabelo", descricao: "Clássico ou moderno, ao seu estilo.", preco: "15€", imagem: "https://images.unsplash.com/photo-1605497788044-5a32c7078486", categoria: "Corte" },
-  { id: 2, nome: "Barba", descricao: "Aparar ou desenhar com perfeição.", preco: "10€", imagem: "https://images.unsplash.com/photo-1622288432441-4f42cae6d203", categoria: "Barba" },
-  { id: 3, nome: "Corte + Barba", descricao: "Pacote completo para renovar o visual.", preco: "22€", imagem: "https://images.unsplash.com/photo-1614200179398-2e6f52f4a8a8", categoria: "Pacote" },
+  { id: 1, nome: "Corte de Cabelo", descricao: "Clássico ou moderno, ao seu estilo.", preco: "15€", imagem: "/Fotos/corte.jpg", categoria: "Corte" },
+  { id: 2, nome: "Barba", descricao: "Aparar ou desenhar com perfeição.", preco: "10€", imagem: "/Fotos/barba.jpg", categoria: "Barba" },
+  { id: 3, nome: "Corte + Barba", descricao: "Pacote completo para renovar o visual.", preco: "22€", imagem: "/Fotos/barbaecabelo.jpg", categoria: "Pacote" },
 ];
 
 const galeria = [
-  "https://images.unsplash.com/photo-1517836357463-d25dfeac3438",
-  "https://images.unsplash.com/photo-1622288432441-4f42cae6d203",
-  "https://images.unsplash.com/photo-1605497788044-5a32c7078486",
-  "https://images.unsplash.com/photo-1621605815971-b9a2eecf7d98",
+  "/Fotos/espaco1.jpg",
+  "/Fotos/espaco2.jpg",
 ];
 
 const depoimentos = [
@@ -54,13 +53,13 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
-        <motion.img
-          src="https://images.trustinnews.pt/uploads/sites/5/2019/11/a-segunda-vida-da-barbearia-passos-manuel-no-porto-2.JPG"
+        <Image
+          src="/Fotos/espaco1.jpg"
           alt="Barbearia"
+          fill
           className="absolute inset-0 w-full h-full object-cover"
-          initial={{ scale: 1.2, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          quality={100}
+          priority
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80"></div>
         <div className="text-center z-10 max-w-2xl px-4">
@@ -145,7 +144,13 @@ export default function Home() {
               variants={fadeSlideUp}
               custom={0.1 * idx}
             >
-              <img src={foto} alt={`Galeria ${idx}`} className="w-full h-64 object-cover"/>
+              <Image
+                src={foto}
+                alt={`Galeria ${idx}`}
+                width={600}
+                height={400}
+                className="w-full h-64 object-cover"
+              />
               <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 hover:opacity-100 flex items-center justify-center text-white font-semibold text-lg transition-opacity">
                 Espaço Estilo
               </div>
@@ -169,7 +174,13 @@ export default function Home() {
               variants={fadeSlideUp}
               custom={0.1 * idx}
             >
-              <img src={s.imagem} alt={s.nome} className="w-full h-48 object-cover"/>
+              <Image
+                src={s.imagem}
+                alt={s.nome}
+                width={600}
+                height={400}
+                className="w-full h-48 object-cover"
+              />
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">{s.nome}</h3>
                 <p className="text-gray-600 mb-4">{s.descricao}</p>

@@ -1,89 +1,67 @@
-// /components/RegisterBarber.tsx
+"use client";
+
 import { useState, useRef } from "react";
 
 export default function RegisterBarber() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [usarUrl, setUsarUrl] = useState(true);
   const [fotoUrl, setFotoUrl] = useState("");
   const [fotoFile, setFotoFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const [usarUrl, setUsarUrl] = useState(true);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      console.log("🖼 Arquivo selecionado:", e.target.files[0].name);
-      setFotoFile(e.target.files[0]);
-    }
+    const file = e.target.files?.[0];
+    if (file) setFotoFile(file);
   };
 
   const handleRegister = async () => {
-    console.log("📝 Iniciando registro de barbeiro");
-    console.log("Campos atuais:", { nome, email, senha, fotoUrl, usarUrl, fotoFile });
-
     if (!nome || !email || !senha) {
       alert("Preencha todos os campos obrigatórios!");
       return;
     }
 
-    if ((usarUrl && !fotoUrl) || (!usarUrl && !fotoFile)) {
+    if (usarUrl && !fotoUrl) {
       alert("A foto é obrigatória!");
+      return;
+    }
+
+    if (!usarUrl && !fotoFile) {
+      alert("Selecione um arquivo antes de enviar!");
       return;
     }
 
     setLoading(true);
 
     try {
-      let finalFotoUrl = "";
+      let finalFotoBase64 = "";
 
-      if (usarUrl) {
-        console.log("🌐 Usando URL da foto:", fotoUrl);
-        finalFotoUrl = fotoUrl;
-      } else if (fotoFile) {
-        console.log("📦 Iniciando upload do arquivo para Supabase...");
-        const fileExt = fotoFile.name.split(".").pop();
-        const fileName = `${Date.now()}.${fileExt}`;
-
-        // 🔹 Faz o upload no bucket de forma pública
-        const { error: uploadError } = await fetch("/api/admin/uploadFile", {
-          method: "POST",
-          body: JSON.stringify({ fileName }),
-        });
-
-        if (uploadError) {
-          console.error("❌ Erro no upload:", uploadError);
-          throw uploadError;
-        }
-
-        finalFotoUrl = `https://YOUR_SUPABASE_BUCKET_URL/${fileName}`;
-        console.log("✅ Upload concluído, URL pública:", finalFotoUrl);
+      if (!usarUrl && fotoFile) {
+        const arrayBuffer = await fotoFile.arrayBuffer();
+        finalFotoBase64 = Buffer.from(arrayBuffer).toString("base64");
       }
-
-      // 🔹 Chama a API server-side para criar o barbeiro
-      console.log("📦 Payload enviado para API:", { nome, email, password: senha, foto: finalFotoUrl });
 
       const res = await fetch("/api/admin/createBarber", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nome, email, password: senha, foto: finalFotoUrl }),
+        body: JSON.stringify({
+          nome,
+          email,
+          password: senha,
+          fotoFile: finalFotoBase64, // envia base64
+        }),
       });
 
       const data = await res.json();
-      console.log("📥 Resposta do servidor:", res.status, data);
+      if (!res.ok) throw new Error(data.error || "Erro desconhecido");
 
-      if (!res.ok) {
-        alert("Erro: " + data?.error);
-      } else {
-        alert("Barbeiro criado com sucesso!");
-        setNome("");
-        setEmail("");
-        setSenha("");
-        setFotoUrl("");
-        setFotoFile(null);
-      }
-    } catch (err) {
-      console.error("❌ Erro inesperado ao criar barbeiro:", err);
+      alert(`Barbeiro criado com sucesso!\nFoto pública: ${data.fotoUrl}`);
+      setNome(""); setEmail(""); setSenha(""); setFotoUrl(""); setFotoFile(null);
+    } catch (err: any) {
+      console.error("Erro inesperado:", err);
       alert("Erro inesperado ao criar barbeiro.");
     }
 
@@ -104,10 +82,12 @@ export default function RegisterBarber() {
       </div>
 
       {usarUrl ? (
-        <input type="text" placeholder="URL da Foto " value={fotoUrl} onChange={(e) => setFotoUrl(e.target.value)} className="w-full p-2 border rounded mb-3" />
+        <input type="text" placeholder="URL da Foto" value={fotoUrl} onChange={(e) => setFotoUrl(e.target.value)} className="w-full p-2 border rounded mb-3" />
       ) : (
         <div className="mb-3">
-          <button type="button" className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700" onClick={() => fileInputRef.current?.click()}>Escolher ficheiro</button>
+          <button type="button" className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700" onClick={() => fileInputRef.current?.click()}>
+            Escolher ficheiro
+          </button>
           <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
           {fotoFile && <p className="mt-2 text-sm text-gray-600">{fotoFile.name}</p>}
         </div>
