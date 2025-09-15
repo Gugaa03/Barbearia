@@ -105,7 +105,7 @@ npm run dev
 * Testes finais e deploy em produção.
 Prints do Projeto
 
-Espaço reservado para algumascapturas de tela das funcionalidades implementadas.
+## Espaço reservado para algumas capturas de tela das funcionalidades implementadas.
 
 <img width="1876" height="828" alt="image" src="https://github.com/user-attachments/assets/983af4f7-1a06-41c0-bf19-0c67e1c0b4d9" />
 <img width="1866" height="458" alt="image" src="https://github.com/user-attachments/assets/c2a7dfce-18d3-4f74-be5b-f7cf4c62cf07" />
