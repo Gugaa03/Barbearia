@@ -52,31 +52,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   return res.status(405).json({ error: "Método não permitido" });
 }
 
-/**
- * @swagger
- * /api/cortes:
- *   post:
- *     summary: Cria um novo corte e associa a um barbeiro
- *     tags:
- *       - Cortes
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               duration:
- *                 type: integer
- *               barberId:
- *                 type: string
- *     responses:
- *       200:
- *         description: Corte criado com sucesso
- *       400:
- *         description: Campos obrigatórios faltando
- *       500:
- *         description: Erro ao criar corte
- */

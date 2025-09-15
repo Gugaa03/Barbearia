@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { supabaseAdmin } from "../../lib/supabase"; // cliente com service role key
+import { supabaseAdmin } from "../../lib/supabase"; 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).json({ error: "Método não permitido" });
@@ -8,7 +8,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!userId || !nome || !email) return res.status(400).json({ error: "Campos obrigatórios" });
 
   try {
-    // Insere na tabela clientes
     const { data, error } = await supabaseAdmin.from("clientes").insert([
       {
         id: userId,

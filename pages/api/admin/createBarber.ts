@@ -11,7 +11,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Criar usuário no Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
@@ -26,9 +25,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let fotoUrl = "";
 
-    // Se recebeu arquivo, subir para Storage
     if (fotoFile) {
-      const buffer = Buffer.from(fotoFile, "base64"); // fotoFile vem em base64
+      const buffer = Buffer.from(fotoFile, "base64"); 
       const filename = `file-${Date.now()}.jpg`;
 
       const { error: uploadError } = await supabaseAdmin.storage
@@ -44,7 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       fotoUrl = urlData.publicUrl;
     }
 
-    // Inserir no banco
     const { error: dbError } = await supabaseAdmin
       .from("barbeiros")
       .insert([{ user_id: userId, nome, foto: fotoUrl }]);

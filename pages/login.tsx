@@ -30,7 +30,7 @@ export default function Login() {
     if (data.user) {
       setMessage("✅ Login realizado com sucesso!");
       // Redireciona para dashboard ou página inicial
-      router.push("/dashboard");
+      router.push("/");
     }
   };
 

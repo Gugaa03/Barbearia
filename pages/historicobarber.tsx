@@ -1,4 +1,3 @@
-// pages/historico-barbeiro.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -20,6 +19,7 @@ type Marcacao = {
 type User = {
   id: string;
   nome: string | null;
+  email?: string | null;
 };
 
 export default function HistoricoBarbeiro() {
@@ -35,6 +35,7 @@ export default function HistoricoBarbeiro() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
+      console.log("Usuário logado:", user);
       if (!user) return;
 
       // 2. Busca o barbeiro correspondente ao user_id
@@ -49,6 +50,7 @@ export default function HistoricoBarbeiro() {
         return;
       }
       setBarbeiroId(barbeiroData.id);
+      console.log("Barbeiro ID:", barbeiroData.id);
 
       // 3. Busca todas as marcações
       const { data: marcacoesData, error: marcacoesError } = await supabase
@@ -59,15 +61,29 @@ export default function HistoricoBarbeiro() {
         console.error("Erro ao buscar marcações:", marcacoesError);
       } else {
         setMarcacoes(marcacoesData || []);
+        console.log("Marcações:", marcacoesData);
       }
 
-      // 4. Busca clientes
-      const { data: clientesData } = await supabase.from("clientes").select("*");
-      setClientes(clientesData || []);
+      // 4. Busca clientes da view
+      const { data: clientesData, error: clientesError } = await supabase
+        .from("clientes_view")
+        .select("*");
+
+      if (clientesError) {
+        console.error("Erro ao buscar clientes_view:", clientesError);
+      } else {
+        setClientes(clientesData || []);
+        console.log("Clientes da view:", clientesData);
+      }
 
       // 5. Busca barbeiros
-      const { data: barbeirosData } = await supabase.from("barbeiros").select("*");
-      setBarbeiros(barbeirosData || []);
+      const { data: barbeirosData, error: barbeirosError } = await supabase.from("barbeiros").select("*");
+      if (barbeirosError) {
+        console.error("Erro ao buscar barbeiros:", barbeirosError);
+      } else {
+        setBarbeiros(barbeirosData || []);
+        console.log("Barbeiros:", barbeirosData);
+      }
     };
 
     fetchData();
@@ -87,16 +103,23 @@ export default function HistoricoBarbeiro() {
     const dataHoraA = new Date(`${a.data}T${a.hora}`);
     const dataHoraB = new Date(`${b.data}T${b.hora}`);
     return filtro === "minhas"
-      ? dataHoraB.getTime() - dataHoraA.getTime() // mais recentes primeiro
-      : dataHoraA.getTime() - dataHoraB.getTime(); // cronológico
+      ? dataHoraB.getTime() - dataHoraA.getTime()
+      : dataHoraA.getTime() - dataHoraB.getTime();
   });
 
-  // Nome do cliente
+  // Nome do cliente atualizado, garantindo string
   const getClienteNome = (m: Marcacao) => {
     if (m.cliente_id) {
-      return clientes.find((c) => c.id === m.cliente_id)?.nome || "Cliente registado";
+      const cliente = clientes.find((c) => c.id === m.cliente_id);
+      if (cliente) {
+        console.log("Cliente encontrado para marcação:", m.id, cliente);
+        return String(cliente.nome || m.nome_cliente || "Cliente registado");
+      } else {
+        console.warn("Cliente não encontrado para ID:", m.cliente_id, "na marcação:", m.id);
+        return String(m.nome_cliente || "Cliente registado");
+      }
     }
-    return m.nome_cliente || "Cliente não registado";
+    return String(m.nome_cliente || "Cliente registado");
   };
 
   const getBarbeiroNome = (id: string) => barbeiros.find((b) => b.id === id)?.nome || id;
@@ -144,10 +167,9 @@ export default function HistoricoBarbeiro() {
             : "Não há marcações registradas."}
         </p>
       ) : filtro === "todas" ? (
-        // AGRUPADO POR DATA
         <div className="space-y-8">
           {Object.keys(groupedByDate)
-            .sort() // ordena datas ascendente
+            .sort()
             .map((date) => (
               <div key={date}>
                 <h2 className="text-xl font-semibold mb-4">{date}</h2>
@@ -173,7 +195,6 @@ export default function HistoricoBarbeiro() {
             ))}
         </div>
       ) : (
-        // HOJE e MINHAS (lista simples)
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {marcacoesFiltradas.map((m) => (
             <Card key={m.id} className="p-4 shadow-md">
@@ -199,3 +220,4 @@ export default function HistoricoBarbeiro() {
     </div>
   );
 }
+  
