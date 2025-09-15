@@ -60,8 +60,8 @@ O sistema ainda está em desenvolvimento, mas a maior parte das funcionalidades 
 1. Clone o repositório:
 
 ```bash
-git clone <url-do-repositorio>
-cd barbearia-estilo
+git clone <[url-do-repositorio](https://github.com/Gugaa03/Barbearia/)>
+cd Barbearia
 ```
 
 2. Instale as dependências:
@@ -70,12 +70,7 @@ cd barbearia-estilo
 npm install
 ```
 
-3. Configure o `.env` com as credenciais do Supabase:
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-```
 
 4. Rode o projeto:
 
