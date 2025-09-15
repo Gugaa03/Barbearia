@@ -1,40 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Barbearia Estilo – Sistema de Gestão
 
-## Getting Started
+> Projeto de gerenciamento de uma barbearia com registro de barbeiros, clientes e histórico de marcações.
+> Status: **Quase finalizado** 🚀
 
-First, run the development server:
+## Descrição
+
+Este projeto é um sistema completo para gerenciamento de uma barbearia, permitindo:
+
+* Registro de barbeiros e clientes.
+* Gestão de agendamentos e histórico de marcações.
+* Dashboard para barbeiros acompanharem suas marcações.
+* Integração com Supabase para autenticação e banco de dados.
+* Upload de fotos de barbeiros via arquivo local.
+
+O sistema ainda está em desenvolvimento, mas a maior parte das funcionalidades já está implementada.
+
+---
+
+## Funcionalidades
+
+### Usuário / Cliente
+
+* Criar conta e login.
+* Visualizar histórico de agendamentos.
+* Acessar portfólio de serviços.
+
+### Barbeiro / Admin
+
+* Registrar novos barbeiros.
+* Acompanhar agenda diária e completa.
+* Visualizar histórico de marcações por dia ou total.
+* Editar perfil e gerenciar suas marcações.
+
+---
+
+## Tecnologias
+
+* **Frontend:** Next.js, React, TailwindCSS.
+* **Backend:** Supabase (autenticação, banco de dados, storage).
+* **UI Components:** `@/components/ui` (Card, Button, etc).
+* **Autenticação:** Supabase Auth.
+
+---
+
+## Estrutura do Projeto
+
+```
+/components      # Componentes reutilizáveis (Navbar, Card, Buttons)
+/lib             # Configuração do Supabase
+/pages           # Páginas principais (login, signup, dashboard, histórico)
+/public          # Assets públicos (imagens, ícones)
+/styles          # Estilos globais
+```
+
+---
+
+## Como Rodar
+
+1. Clone o repositório:
+
+```bash
+git clone <url-do-repositorio>
+cd barbearia-estilo
+```
+
+2. Instale as dependências:
+
+```bash
+npm install
+```
+
+3. Configure o `.env` com as credenciais do Supabase:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
+
+4. Rode o projeto:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Acesse em: `http://localhost:3000`
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+---
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Status do Projeto
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+* Cadastro de clientes: ✅
+* Cadastro de barbeiros: ✅
+* Dashboard do barbeiro: ✅
+* Histórico de marcações: ✅
+* Upload de fotos de barbeiro: ✅
+* Ajustes finais de UI e testes: ⚠️ **Em andamento**
+* Deploy final: ⚠️ **Pendente**
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> O sistema está **quase completo** e pronto para testes internos.
+> Funcionalidades principais estão implementadas, restam apenas ajustes finais e refinamento visual.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Próximos Passos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+* Melhorar experiência do usuário no dashboard.
+* Adicionar notificações de marcação.
+* Refinar responsividade em dispositivos móveis.
+* Testes finais e deploy em produção.
