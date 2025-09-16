@@ -108,8 +108,8 @@ Prints do Projeto
 ## Espaço reservado para algumas capturas de tela das funcionalidades implementadas.
 
 <img width="1876" height="828" alt="image" src="https://github.com/user-attachments/assets/983af4f7-1a06-41c0-bf19-0c67e1c0b4d9" />
-<img width="1866" height="458" alt="image" src="https://github.com/user-attachments/assets/c2a7dfce-18d3-4f74-be5b-f7cf4c62cf07" />
-<img width="1816" height="815" alt="image" src="https://github.com/user-attachments/assets/7f6bcb71-19b4-4572-a3ca-f217687594c0" />
+<img width="1870" height="633" alt="image" src="https://github.com/user-attachments/assets/17aa0006-af23-4b75-9058-edfd8ac27a43" />
+<img width="1848" height="836" alt="image" src="https://github.com/user-attachments/assets/e64f651d-76ec-4398-bf17-cbb029ad949b" />
 <img width="1308" height="708" alt="image" src="https://github.com/user-attachments/assets/3aba83f8-9d1e-4719-ba47-b9e2d5c90392" />
 
 
