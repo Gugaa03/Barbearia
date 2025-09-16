@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { motion } from "framer-motion";
+import { Scissors, User, Calendar as CalendarIcon, Clock, CheckCircle } from "lucide-react";
 
 const servicos = [
   { id: 1, nome: "Corte de Cabelo", preco: "15€" },
@@ -50,7 +52,7 @@ export default function Marcacoes() {
             fotoURL = b.foto.startsWith("http") ? b.foto : `${BUCKET_URL}/${b.foto}`;
           }
           return {
-            id: b.id, // ✅ usa o id da tabela barbeiros (não user_id)
+            id: b.id,
             nome: b.nome,
             foto: fotoURL,
           };
@@ -95,7 +97,7 @@ export default function Marcacoes() {
       servico: servicoObj.nome,
       servico_id: servicoSelecionado,
       preco: precoNumerico,
-      barbeiro_id: barbeiroSelecionado, // ✅ agora é o id correto da tabela barbeiros
+      barbeiro_id: barbeiroSelecionado,
       data: dataSelecionada.toISOString().split("T")[0],
       hora: horaSelecionada,
     };
@@ -110,7 +112,6 @@ export default function Marcacoes() {
     }
 
     try {
-      console.log("📌 Payload enviado:", payload);
       const res = await fetch("/api/marcacoes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -131,71 +132,92 @@ export default function Marcacoes() {
 
   const barbeiroSelecionadoObj = barbeiros.find((b) => b.id === barbeiroSelecionado);
 
-  // Função para desabilitar domingos
   const disableDomingos = (date: Date) => date.getDay() === 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Marcar Consulta</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 p-8">
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-4xl font-extrabold text-center mb-10 text-blue-700"
+      >
+        ✂️ Marcar Consulta
+      </motion.h1>
 
-      {/* Passo 1: Escolher serviço */}
+      {/* --- Passos --- */}
       {passo === 1 && (
-        <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl font-semibold mb-6">Escolha o serviço</h2>
-          {servicos.map((s) => (
-            <div
-              key={s.id}
-              onClick={() => setServicoSelecionado(s.id)}
-              className={`cursor-pointer p-3 mb-3 border rounded-lg ${
-                servicoSelecionado === s.id
-                  ? "border-blue-500 bg-blue-50"
-                  : "hover:bg-gray-50"
-              }`}
-            >
-              {s.nome} - {s.preco}
-            </div>
-          ))}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-xl"
+        >
+          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
+            <Scissors className="w-6 h-6 text-blue-600" /> Escolha o serviço
+          </h2>
+          <div className="space-y-3 mb-6">
+            {servicos.map((s) => (
+              <div
+                key={s.id}
+                onClick={() => setServicoSelecionado(s.id)}
+                className={`cursor-pointer p-4 rounded-xl border transition ${
+                  servicoSelecionado === s.id
+                    ? "border-blue-600 bg-blue-50 shadow-md"
+                    : "hover:bg-gray-50"
+                }`}
+              >
+                <span className="font-medium">{s.nome}</span>
+                <span className="float-right text-blue-600">{s.preco}</span>
+              </div>
+            ))}
+          </div>
           <button
             onClick={() => setPasso(2)}
-            className="px-6 py-3 rounded-lg bg-blue-600 text-white"
+            className="w-full px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
           >
             Próximo
           </button>
-        </div>
+        </motion.div>
       )}
 
-      {/* Passo 2: Escolher barbeiro */}
       {passo === 2 && (
-        <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl font-semibold mb-6">Escolha o barbeiro</h2>
-          {barbeiros.map((b) => (
-            <div
-              key={b.id}
-              onClick={() => setBarbeiroSelecionado(b.id)}
-              className={`cursor-pointer p-3 mb-3 border rounded-lg ${
-                barbeiroSelecionado === b.id
-                  ? "border-blue-500 bg-blue-50"
-                  : "hover:bg-gray-50"
-              } flex items-center gap-3`}
-            >
-              {b.foto ? (
-                <img
-                  src={b.foto}
-                  alt={b.nome}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
-                  📷
-                </div>
-              )}
-              {b.nome}
-            </div>
-          ))}
-          <div className="flex justify-between mt-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-xl"
+        >
+          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
+            <User className="w-6 h-6 text-blue-600" /> Escolha o barbeiro
+          </h2>
+          <div className="space-y-3 mb-6">
+            {barbeiros.map((b) => (
+              <div
+                key={b.id}
+                onClick={() => setBarbeiroSelecionado(b.id)}
+                className={`cursor-pointer p-4 flex items-center gap-4 rounded-xl border transition ${
+                  barbeiroSelecionado === b.id
+                    ? "border-blue-600 bg-blue-50 shadow-md"
+                    : "hover:bg-gray-50"
+                }`}
+              >
+                {b.foto ? (
+                  <img
+                    src={b.foto}
+                    alt={b.nome}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
+                    📷
+                  </div>
+                )}
+                <span className="font-medium">{b.nome}</span>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-between">
             <button
               onClick={() => setPasso(1)}
-              className="px-4 py-2 rounded-lg border"
+              className="px-6 py-2 rounded-xl border hover:bg-gray-100 transition"
             >
               Voltar
             </button>
@@ -204,24 +226,29 @@ export default function Marcacoes() {
                 if (!barbeiroSelecionado) return alert("⚠️ Escolha um barbeiro primeiro!");
                 setPasso(3);
               }}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white"
+              className="px-6 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
             >
               Próximo
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
 
-      {/* Passo 3: Calendário e horários */}
       {passo === 3 && (
-        <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl font-semibold mb-6">Escolha a data e horário</h2>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-xl"
+        >
+          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
+            <CalendarIcon className="w-6 h-6 text-blue-600" /> Escolha a data e horário
+          </h2>
           <Calendar
             onChange={(date: any) => setDataSelecionada(date)}
             value={dataSelecionada}
             minDate={new Date()}
             tileDisabled={({ date }) => disableDomingos(date)}
-            className="rounded-lg mb-4"
+            className="rounded-lg border mb-4"
           />
           <div className="grid grid-cols-3 gap-3 mt-4">
             {horarios.map((h) => (
@@ -229,7 +256,7 @@ export default function Marcacoes() {
                 key={h}
                 onClick={() => setHoraSelecionada(h)}
                 disabled={horariosOcupados.includes(h)}
-                className={`p-3 rounded-lg border ${
+                className={`p-3 rounded-xl border font-medium transition ${
                   horaSelecionada === h
                     ? "bg-blue-600 text-white border-blue-600"
                     : horariosOcupados.includes(h)
@@ -241,68 +268,76 @@ export default function Marcacoes() {
               </button>
             ))}
           </div>
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between mt-6">
             <button
               onClick={() => setPasso(2)}
-              className="px-4 py-2 rounded-lg border"
+              className="px-6 py-2 rounded-xl border hover:bg-gray-100 transition"
             >
               Voltar
             </button>
             <button
               onClick={() => setPasso(user ? 6 : 5)}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white"
+              className="px-6 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
             >
               Próximo
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
 
-      {/* Passo 5: Dados do cliente (se não logado) */}
       {passo === 5 && !user && (
-        <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-xl"
+        >
           <h2 className="text-2xl font-semibold mb-6">Seus dados</h2>
           <input
             type="text"
             placeholder="Nome completo"
             value={nomeCliente}
             onChange={(e) => setNomeCliente(e.target.value)}
-            className="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full mb-4 p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="email"
             placeholder="Email"
             value={emailCliente}
             onChange={(e) => setEmailCliente(e.target.value)}
-            className="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full mb-6 p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <div className="flex justify-between">
             <button
               onClick={() => setPasso(3)}
-              className="px-4 py-2 rounded-lg border"
+              className="px-6 py-2 rounded-xl border hover:bg-gray-100 transition"
             >
               Voltar
             </button>
             <button
               onClick={() => setPasso(6)}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white"
+              className="px-6 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
             >
               Próximo
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
 
-      {/* Passo 6: Confirmar */}
       {passo === 6 && (
-        <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg text-center">
-          <h2 className="text-2xl font-semibold mb-6">Confirmar Marcação</h2>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-xl text-center"
+        >
+          <h2 className="text-2xl font-semibold mb-6 flex items-center justify-center gap-2">
+            <CheckCircle className="w-6 h-6 text-green-600" /> Confirmar Marcação
+          </h2>
           <p className="mb-2">
-            Serviço:{" "}
-            <strong>{servicos.find((s) => s.id === servicoSelecionado)?.nome}</strong>
+            <strong>Serviço:</strong>{" "}
+            {servicos.find((s) => s.id === servicoSelecionado)?.nome}
           </p>
           <p className="mb-2">
-            Barbeiro: <strong>{barbeiroSelecionadoObj?.nome}</strong>
+            <strong>Barbeiro:</strong> {barbeiroSelecionadoObj?.nome}
           </p>
           {barbeiroSelecionadoObj?.foto && (
             <img
@@ -311,33 +346,37 @@ export default function Marcacoes() {
               className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
             />
           )}
-          <p className="mb-2">Data: <strong>{dataSelecionada.toLocaleDateString()}</strong></p>
-          <p className="mb-4">Hora: <strong>{horaSelecionada}</strong></p>
+          <p className="mb-2">
+            <strong>Data:</strong> {dataSelecionada.toLocaleDateString()}
+          </p>
+          <p className="mb-4">
+            <strong>Hora:</strong> {horaSelecionada}
+          </p>
           {!user && (
             <>
               <p className="mb-2">
-                Nome: <strong>{nomeCliente}</strong>
+                <strong>Nome:</strong> {nomeCliente}
               </p>
               <p className="mb-4">
-                Email: <strong>{emailCliente}</strong>
+                <strong>Email:</strong> {emailCliente}
               </p>
             </>
           )}
           <div className="flex justify-between">
             <button
               onClick={() => setPasso(user ? 3 : 5)}
-              className="px-4 py-2 rounded-lg border"
+              className="px-6 py-2 rounded-xl border hover:bg-gray-100 transition"
             >
               Voltar
             </button>
             <button
               onClick={handleConfirmar}
-              className="px-4 py-2 rounded-lg bg-green-600 text-white"
+              className="px-6 py-2 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition"
             >
               Confirmar
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );
