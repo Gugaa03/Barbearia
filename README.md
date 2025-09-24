@@ -89,8 +89,8 @@ npm run dev
 * Dashboard do barbeiro: ✅
 * Histórico de marcações: ✅
 * Upload de fotos de barbeiro: ✅
-* Melhorar parte Visual e testes: ⚠️ **Em andamento**
-* Deploy final: ⚠️ **Pendente**
+* Melhorar parte Visual e funcionalidades: ⚠️ **Em andamento**
+* Teste e Deploy final: ⚠️ **Pendente**
 
 > O sistema está **quase completo** e pronto para testes internos.
 > Funcionalidades principais estão implementadas, restam apenas ajustes finais e refinamento visual.
