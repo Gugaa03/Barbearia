@@ -141,7 +141,7 @@ export default function Marcacoes() {
         animate={{ opacity: 1, y: 0 }}
         className="text-4xl font-extrabold text-center mb-10 text-blue-700"
       >
-        ✂️ Marcar Consulta
+        ✂️ Escolha o seu Serviço
       </motion.h1>
 
       {/* --- Passos --- */}

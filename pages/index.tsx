@@ -1,4 +1,3 @@
-// pages/index.tsx
 "use client";
 
 import Link from "next/link";
@@ -7,7 +6,7 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 const servicos = [
   { id: 1, nome: "Corte de Cabelo", descricao: "Clássico ou moderno, ao seu estilo.", preco: "15€", imagem: "/Fotos/corte.jpg", categoria: "Corte" },
@@ -26,30 +25,23 @@ const depoimentos = [
   { id: 3, nome: "Pedro Santos", texto: "Melhor lugar para cuidar do visual em Lisboa!", estrela: 5 },
 ];
 
+const fadeSlideUp: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (custom = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, delay: custom, ease: [0.43, 0.13, 0.23, 0.96] },
+  }),
+};
+
 export default function Home() {
-  const [user, setUser] = useState<any>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) setUser(user);
-    };
-    getUser();
-  }, []);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/login");
-  };
-
-  const fadeSlideUp = {
-    hidden: { opacity: 0, y: 40 },
-    visible: (delay = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.8, delay } })
-  };
-
   return (
-    <div className="flex flex-col min-h-screen scroll-smooth">
+    <div
+      className="flex flex-col min-h-screen scroll-smooth font-poppins bg-gradient-to-b from-gray-50 to-white text-gray-800"
+      style={{ fontFamily: "'Poppins', sans-serif" }}
+    >
 
       {/* Hero Section */}
       <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
@@ -57,14 +49,14 @@ export default function Home() {
           src="/Fotos/espaco1.jpg"
           alt="Barbearia"
           fill
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover filter brightness-75 contrast-110"
           quality={100}
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80"></div>
-        <div className="text-center z-10 max-w-2xl px-4">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70"></div>
+        <div className="text-center z-10 max-w-3xl px-6">
           <motion.h1
-            className="text-6xl md:text-7xl font-extrabold text-white drop-shadow-2xl mb-6"
+            className="text-5xl md:text-7xl font-extrabold text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] mb-6 tracking-wide"
             variants={fadeSlideUp}
             initial="hidden"
             animate="visible"
@@ -72,7 +64,7 @@ export default function Home() {
             Seu Estilo, Nossa Arte
           </motion.h1>
           <motion.p
-            className="text-xl md:text-2xl text-gray-200 mb-8"
+            className="text-lg md:text-2xl text-gray-200 mb-10 tracking-wide"
             variants={fadeSlideUp}
             initial="hidden"
             animate="visible"
@@ -81,7 +73,7 @@ export default function Home() {
             Transformamos cortes em experiências únicas.
           </motion.p>
           <motion.div
-            className="flex justify-center gap-4"
+            className="flex justify-center gap-6"
             variants={fadeSlideUp}
             initial="hidden"
             animate="visible"
@@ -89,13 +81,13 @@ export default function Home() {
           >
             <Link
               href="#servicos"
-              className="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-lg"
+              className="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 px-10 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-xl"
             >
               Explorar Serviços
             </Link>
             <Link
               href="/marcacoes"
-              className="bg-green-600 hover:bg-green-700 px-8 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-lg"
+              className="bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 px-10 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-xl"
             >
               Marque Já
             </Link>
@@ -104,22 +96,30 @@ export default function Home() {
       </section>
 
       {/* Sobre Nós */}
-      <motion.section id="sobre" className="py-20 bg-gray-50 px-6 text-center"
+      <motion.section
+        id="sobre"
+        className="py-24 bg-white px-8 text-center"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <motion.h2 className="text-3xl font-bold mb-12" variants={fadeSlideUp} custom={0}>Sobre Nós</motion.h2>
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+        <motion.h2
+          className="text-4xl font-bold mb-16 tracking-wide text-gray-900"
+          variants={fadeSlideUp}
+          custom={0}
+        >
+          Sobre Nós
+        </motion.h2>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
           {["Experiência", "Qualidade", "Atendimento"].map((titulo, idx) => (
             <motion.div
               key={idx}
-              className="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition"
+              className="bg-gradient-to-tr from-white via-gray-50 to-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-shadow cursor-default"
               variants={fadeSlideUp}
               custom={0.2 * idx}
             >
-              <h3 className="text-xl font-semibold mb-2">{titulo}</h3>
-              <p>
+              <h3 className="text-2xl font-semibold mb-4 text-gray-800">{titulo}</h3>
+              <p className="text-gray-600 leading-relaxed text-lg">
                 {titulo === "Experiência" && "Mais de 10 anos transformando visuais com dedicação e técnica impecável."}
                 {titulo === "Qualidade" && "Produtos de primeira linha e cortes adaptados ao seu estilo pessoal."}
                 {titulo === "Atendimento" && "Ambiente acolhedor e profissionais dedicados para uma experiência única."}
@@ -130,28 +130,32 @@ export default function Home() {
       </motion.section>
 
       {/* Galeria */}
-      <motion.section id="galeria" className="py-20 bg-gray-100"
+      <motion.section
+        id="galeria"
+        className="py-24 bg-gray-50"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <motion.h2 className="text-3xl font-bold text-center mb-10" variants={fadeSlideUp}>O Nosso Espaço</motion.h2>
-        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
+        <motion.h2 className="text-4xl font-bold text-center mb-14 tracking-wide text-gray-900" variants={fadeSlideUp}>
+          O Nosso Espaço
+        </motion.h2>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-8">
           {galeria.map((foto, idx) => (
             <motion.div
               key={idx}
-              className="relative overflow-hidden rounded-xl shadow-md hover:scale-105 transition-transform"
+              className="relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-shadow transform hover:scale-[1.04]"
               variants={fadeSlideUp}
               custom={0.1 * idx}
             >
               <Image
                 src={foto}
-                alt={`Galeria ${idx}`}
+                alt={`Galeria ${idx + 1}`}
                 width={600}
                 height={400}
-                className="w-full h-64 object-cover"
+                className="w-full h-64 object-cover rounded-3xl"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 hover:opacity-100 flex items-center justify-center text-white font-semibold text-lg transition-opacity">
+              <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 hover:opacity-100 flex items-center justify-center text-white font-semibold text-lg transition-opacity rounded-3xl backdrop-blur-sm">
                 Espaço Estilo
               </div>
             </motion.div>
@@ -160,17 +164,24 @@ export default function Home() {
       </motion.section>
 
       {/* Serviços */}
-      <motion.section id="servicos" className="py-20 bg-white"
+      <motion.section
+        id="servicos"
+        className="py-24 bg-white"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <motion.h2 className="text-3xl font-bold text-center mb-10" variants={fadeSlideUp}>Os nossos serviços</motion.h2>
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.h2
+          className="text-4xl font-bold text-center mb-14 tracking-wide text-gray-900"
+          variants={fadeSlideUp}
+        >
+          Os nossos serviços
+        </motion.h2>
+        <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
           {servicos.map((s, idx) => (
             <motion.div
               key={s.id}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition transform hover:-translate-y-1"
+              className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-1 hover:scale-[1.03]"
               variants={fadeSlideUp}
               custom={0.1 * idx}
             >
@@ -179,13 +190,16 @@ export default function Home() {
                 alt={s.nome}
                 width={600}
                 height={400}
-                className="w-full h-48 object-cover"
+                className="w-full h-56 object-cover rounded-t-3xl"
               />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">{s.nome}</h3>
-                <p className="text-gray-600 mb-4">{s.descricao}</p>
-                <p className="text-lg font-bold mb-4">{s.preco}</p>
-                <Link href="/marcacoes" className="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+              <div className="p-7">
+                <h3 className="text-2xl font-semibold mb-3">{s.nome}</h3>
+                <p className="text-gray-600 mb-5 text-lg">{s.descricao}</p>
+                <p className="text-xl font-bold mb-6 text-blue-700">{s.preco}</p>
+                <Link
+                  href="/marcacoes"
+                  className="inline-block bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-6 py-3 rounded-full font-semibold shadow-lg transition-transform transform hover:scale-105"
+                >
                   Marcar já
                 </Link>
               </div>
@@ -195,62 +209,53 @@ export default function Home() {
       </motion.section>
 
       {/* Depoimentos */}
-      <motion.section className="py-20 bg-gray-50"
+      <motion.section
+        className="py-24 bg-gray-50"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <motion.h2 className="text-3xl font-bold text-center mb-10" variants={fadeSlideUp}>Depoimentos</motion.h2>
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-6">
+        <motion.h2
+          className="text-4xl font-bold text-center mb-14 tracking-wide text-gray-900"
+          variants={fadeSlideUp}
+        >
+          Depoimentos
+        </motion.h2>
+        <div className="max-w-4xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-10">
           {depoimentos.map((d, idx) => (
             <motion.div
               key={d.id}
-              className="bg-white shadow-lg p-6 rounded-xl hover:shadow-xl transition"
+              className="bg-white rounded-3xl p-7 shadow-lg hover:shadow-2xl transition cursor-default"
               variants={fadeSlideUp}
               custom={0.1 * idx}
             >
-              <p className="mb-4">"{d.texto}"</p>
-              <div className="flex items-center gap-1">
-                {Array.from({ length: d.estrela }).map((_, i) => <span key={i}>⭐</span>)}
-              </div>
-              <p className="mt-2 font-semibold">{d.nome}</p>
+              <p className="mb-4 text-gray-700 text-lg leading-relaxed">"{d.texto}"</p>
+              <p className="font-semibold text-gray-900">{d.nome}</p>
+              <p className="text-yellow-400 mt-2">
+                {"⭐".repeat(d.estrela)}
+              </p>
             </motion.div>
           ))}
         </div>
       </motion.section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-10">
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-3 gap-8">
-          <div>
-            <h4 className="text-lg font-semibold mb-3">Contato</h4>
-            <p>Rua das Tesouras, 123</p>
-            <p>Lisboa, Portugal</p>
-            <p>Tel: +351 912 345 678</p>
-            <p>Email: info@barbearia.pt</p>
+      <footer className="bg-gray-900 text-gray-400 py-10 px-8 mt-auto">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-sm">&copy; {new Date().getFullYear()} Barbearia Estilo. Todos os direitos reservados.</p>
+          <div className="flex gap-6 text-gray-400">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-white transition">
+              <Facebook size={24} />
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-white transition">
+              <Instagram size={24} />
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="hover:text-white transition">
+              <Twitter size={24} />
+            </a>
           </div>
-          <div>
-            <h4 className="text-lg font-semibold mb-3">Links Rápidos</h4>
-            <ul className="space-y-2">
-              <li><a href="#sobre" className="hover:text-white">Sobre Nós</a></li>
-              <li><a href="#galeria" className="hover:text-white">Galeria</a></li>
-              <li><a href="#servicos" className="hover:text-white">Serviços</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-lg font-semibold mb-3">Siga-nos</h4>
-            <div className="flex space-x-4">
-              <a href="#" className="p-2 bg-gray-800 rounded-full hover:bg-blue-600"><Facebook className="w-5 h-5 text-white"/></a>
-              <a href="#" className="p-2 bg-gray-800 rounded-full hover:bg-pink-600"><Instagram className="w-5 h-5 text-white"/></a>
-              <a href="#" className="p-2 bg-gray-800 rounded-full hover:bg-sky-500"><Twitter className="w-5 h-5 text-white"/></a>
-            </div>
-          </div>
-        </div>
-        <div className="text-center text-gray-500 mt-8">
-          © {new Date().getFullYear()} Barbearia Estilo. Todos os direitos reservados.
         </div>
       </footer>
-
     </div>
   );
 }
